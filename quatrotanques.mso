@@ -1,0 +1,78 @@
+using "types";
+FlowSheet QuatroTanques
+
+PARAMETERS 
+	
+	g as Real   (Brief="Gravity", Default = 9.8, Unit='m/s^2');
+	A as area 	(Brief="Cross Section Area");
+	a as area 	(Brief="Outlet Cross Section Area");
+	d as length	(Brief ="Tank Diameter outlet");
+	D as length	(Brief ="Tank Diameter");
+	Pi as Real  (Default = 3.141592);
+	rho as Real (Brief="Density",Unit='kg/m^3');
+
+	gama1 as Real (Brief="Split ratio");
+	gama2 as Real (Brief="Split ratio");
+
+	v1 as Real (Brief="Pump tension",Unit='V');
+	v2 as Real (Brief="Pump tension",Unit='V');
+
+	k1 as Real (Brief="Valve Constant", Unit='(m^3)/(V*s)');
+	k2 as Real (Brief="Valve Constant", Unit='(m^3)/(V*s)');
+
+	H as length (Brief="Total tank height");
+	ftqe1 as Real (Brief = "Fraction of the tank heigh");
+	ftqe2 as Real (Brief = "Fraction of the tank eigh");
+	ftqe3 as Real (Brief = "Fraction of the tank heigh");
+	ftqe4 as Real (Brief = "Fraction of the tank heigh");
+	
+VARIABLES
+
+	h1 as length	  (Brief="Tank level");
+	h2 as length	  (Brief="Tank level");
+	h3 as length	  (Brief="Tank level");
+	h4 as length	  (Brief="Tank level");
+
+EQUATIONS
+	
+	diff(h1) = -(a/A)*(2*g*h1)^(1/2) + (a/A)*(2*g*h3)^(1/2) + gama1*(k1)*(v1/A);
+    diff(h2) = -(a/A)*(2*g*h2)^(1/2) + (a/A)*(2*g*h4)^(1/2) + gama2*(k2)*(v2/A);
+    diff(h3) = -(a/A)*(2*g*h3)^(1/2) + (1-gama2)*k2*(v2/A);
+    diff(h4) = -(a/A)*(2*g*h4)^(1/2) + (1-gama1)*k1*(v1/A);
+
+SET
+	H = 0.2*'m';
+	
+	ftqe1 = 0.1;
+	ftqe2 = 0.2;
+	ftqe3 = 0.4;
+	ftqe4 = 0.5;
+
+
+	D = 0.06*'m';
+	d = 3e-3*'m';
+	A = Pi*(D^2)/4;
+	a = Pi*(d^2)/4;
+	rho = 1000*'kg/m^3';
+	gama1 = 0.5;
+	gama2 = 0.5;
+	k1 = 0.5e-6*'(m^3)/(V*s)';
+	k2 = 0.5e-6*'(m^3)/(V*s)';
+	v1 = 10*'V';
+	v2 = 10*'V';
+	
+
+INITIAL
+
+	h1 = ftqe1*H;
+	h2 = ftqe2*H;
+	h3 = ftqe3*H;
+	h4 = ftqe4*H;
+
+OPTIONS
+	TimeStart = 0;
+	TimeEnd = 120;
+	TimeStep = 0.1;
+	TimeUnit = 's';
+
+end
